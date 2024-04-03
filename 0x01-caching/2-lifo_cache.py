@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
-"""Last-In First-Out caching mod
+"""Last-In First-Out caching module.
 """
 from collections import OrderedDict
 
 from base_caching import BaseCaching
 
+
 class LIFOCache(BaseCaching):
-    """Rep an obj that alows storing
-    and getting items from a dict
-    with LIFO removal mechanism when lim
-    is reached"""
+    """Represents an object that allows storing and
+    retrieving items from a dictionary with a LIFO
+    removal mechanism when the limit is reached.
+    """
     def __init__(self):
-        """init the cache"""
+        """Initializes the cache.
+        """
         super().__init__()
         self.cache_data = OrderedDict()
-        
+
     def put(self, key, item):
-        """Add an item in the cache
+        """Adds an item in the cache.
         """
         if key is None or item is None:
             return
@@ -28,5 +30,6 @@ class LIFOCache(BaseCaching):
         self.cache_data.move_to_end(key, last=True)
 
     def get(self, key):
-        """get an item by key"""
+        """Retrieves an item by key.
+        """
         return self.cache_data.get(key, None)
