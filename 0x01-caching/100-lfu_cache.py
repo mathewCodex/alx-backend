@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""least freq used caching mod
+"""Least Frequently Used caching module.
 """
 from collections import OrderedDict
 
@@ -7,21 +7,20 @@ from base_caching import BaseCaching
 
 
 class LFUCache(BaseCaching):
-    """rep an obj that allows storing
-    gets an item from a dict with a LFU
-    removal mech when the lim is 
-    reached"""
+    """Represents an object that allows storing and
+    retrieving items from a dictionary with a LFU
+    removal mechanism when the limit is reached.
+    """
     def __init__(self):
-        """init the cache
+        """Initializes the cache.
         """
         super().__init__()
         self.cache_data = OrderedDict()
         self.keys_freq = []
 
-    def __reorer_items(self, mru_key):
-        """reorder the items in this cache
-        based on the most
-        recent used item
+    def __reorder_items(self, mru_key):
+        """Reorders the items in this cache based on the most
+        recently used item.
         """
         max_positions = []
         mru_freq = 0
@@ -30,14 +29,14 @@ class LFUCache(BaseCaching):
         for i, key_freq in enumerate(self.keys_freq):
             if key_freq[0] == mru_key:
                 mru_freq = key_freq[1] + 1
-                mru_pos = 1
+                mru_pos = i
                 break
             elif len(max_positions) == 0:
                 max_positions.append(i)
             elif key_freq[1] < self.keys_freq[max_positions[-1]][1]:
                 max_positions.append(i)
         max_positions.reverse()
-        for pos in max_positions
+        for pos in max_positions:
             if self.keys_freq[pos][1] > mru_freq:
                 break
             ins_pos = pos
@@ -45,7 +44,7 @@ class LFUCache(BaseCaching):
         self.keys_freq.insert(ins_pos, [mru_key, mru_freq])
 
     def put(self, key, item):
-        """adds an item in the cache
+        """Adds an item in the cache.
         """
         if key is None or item is None:
             return
@@ -67,8 +66,8 @@ class LFUCache(BaseCaching):
             self.__reorder_items(key)
 
     def get(self, key):
-        """gets an item by key
+        """Retrieves an item by key.
         """
-        if key is not None and Key in self.cache_data:
+        if key is not None and key in self.cache_data:
             self.__reorder_items(key)
         return self.cache_data.get(key, None)
