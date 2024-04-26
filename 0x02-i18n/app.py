@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A absic Flask app with internalization support
+"""A Basic Flask app with internationalization support.
 """
 import pytz
 from typing import Union, Dict
@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, g
 
 
 class Config:
-    """Rep a Flask Babel cfg
+    """Represents a Flask Babel configuration.
     """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
@@ -26,24 +26,27 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
+
 def get_user() -> Union[Dict, None]:
-    """Retrieves a user based on a user id
+    """Retrieves a user based on a user id.
     """
     login_id = request.args.get('login_as', '')
     if login_id:
         return users.get(int(login_id), None)
     return None
 
+
 @app.before_request
 def before_request() -> None:
-    """Performs some routeines b4 each req
+    """Performs some routines before each request's resolution.
     """
     user = get_user()
     g.user = user
 
+
 @babel.localeselector
 def get_locale() -> str:
-    """Retrieves the locale for a web page
+    """Retrieves the locale for a web page.
     """
     queries = request.query_string.decode('utf-8').split('&')
     query_table = dict(map(
@@ -61,9 +64,10 @@ def get_locale() -> str:
         return header_locale
     return app.config['BABEL_DEFAULT_LOCALE']
 
-@babel_timezoneselector
+
+@babel.timezoneselector
 def get_timezone() -> str:
-    """Ret the timezone for a web page
+    """Retrieves the timezone for a web page.
     """
     timezone = request.args.get('timezone', '').strip()
     if not timezone and g.user:
@@ -73,13 +77,14 @@ def get_timezone() -> str:
     except pytz.exceptions.UnknownTimeZoneError:
         return app.config['BABEL_DEFAULT_TIMEZONE']
 
+
 @app.route('/')
 def get_index() -> str:
-    """The home/idx page
+    """The home/index page.
     """
     g.time = format_datetime()
     return render_template('index.html')
 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-

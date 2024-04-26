@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A absic Flask app with intl support
+"""A Basic Flask app with internationalization support.
 """
 import pytz
 from flask_babel import Babel
@@ -8,10 +8,10 @@ from flask import Flask, render_template, request, g
 
 
 class Config:
-    """rep a Flask Babel config
+    """Represents a Flask Babel configuration.
     """
     LANGUAGES = ["en", "fr"]
-    Babel_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
@@ -28,23 +28,25 @@ users = {
 
 
 def get_user() -> Union[Dict, None]:
-    """Retrieves a user based on a user id
+    """Retrieves a user based on a user id.
     """
     login_id = request.args.get('login_as', '')
     if login_id:
         return users.get(int(login_id), None)
     return None
 
+
 @app.before_request
 def before_request() -> None:
-    """Performs some routines before each req
+    """Performs some routines before each request's resolution.
     """
     user = get_user()
     g.user = user
 
-@bebel.localeselector
+
+@babel.localeselector
 def get_locale() -> str:
-    """Ret the locale for a web page
+    """Retrieves the locale for a web page.
     """
     locale = request.args.get('locale', '')
     if locale in app.config["LANGUAGES"]:
@@ -59,7 +61,7 @@ def get_locale() -> str:
 
 @babel.timezoneselector
 def get_timezone() -> str:
-    """retrieve the timezone for a web
+    """Retrieves the timezone for a web page.
     """
     timezone = request.args.get('timezone', '').strip()
     if not timezone and g.user:
@@ -69,9 +71,10 @@ def get_timezone() -> str:
     except pytz.exceptions.UnknownTimeZoneError:
         return app.config['BABEL_DEFAULT_TIMEZONE']
 
+
 @app.route('/')
 def get_index() -> str:
-    """The home/idx page
+    """The home/index page.
     """
     return render_template('7-index.html')
 
